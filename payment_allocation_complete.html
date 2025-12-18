@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Allocation Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: white;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .message {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .allocation-options {
+            margin-bottom: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            border: 1px solid #d1d5db;
+            border-bottom: none;
+            background-color: #fafafa;
+        }
+
+        .option-item:last-child {
+            border-bottom: 1px solid #d1d5db;
+        }
+
+        .option-item input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            flex-shrink: 0;
+            accent-color: #2563eb;
+        }
+
+        .option-label {
+            flex: 1;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            user-select: none;
+        }
+
+        .amount-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .amount-input-group span {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .amount-input-group input {
+            width: 120px;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            text-align: right;
+            font-size: 14px;
+            background-color: white;
+        }
+
+        .amount-input-group input:disabled {
+            background-color: #f3f4f6;
+            color: #9ca3af;
+        }
+
+        .amount-input-group input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        }
+
+        .payment-label {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+            text-align: center;
+        }
+
+        .summary-box {
+            background-color: #fafafa;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid #d1d5db;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+            padding-top: 10px;
+            border-top: 1px solid #d1d5db;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .summary-row.balanced {
+            color: #16a34a;
+        }
+
+        .summary-row.unbalanced {
+            color: #dc2626;
+        }
+
+        .status-indicator {
+            margin-bottom: 24px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator.show {
+            display: flex;
+        }
+
+        .status-indicator.warning {
+            background-color: #fef3c7;
+            border: 1px solid #fcd34d;
+            color: #92400e;
+        }
+
+        .status-indicator.success {
+            background-color: #dcfce7;
+            border: 1px solid #86efac;
+            color: #166534;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px 40px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel {
+            background-color: #a1a1a1;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background-color: #7f7f7f;
+        }
+
+        .btn-ok {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .btn-ok:hover:not(:disabled) {
+            background-color: #1d4ed8;
+        }
+
+        .btn-ok:disabled {
+            background-color: #d1d5db;
+            cursor: not-allowed;
+            color: #9ca3af;
+        }
+
+        .checkmark {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Now Apply the $1,000</h1>
+
+        <p class="message">
+            Select where to apply the $1,000 payment and enter amounts. All funds must be allocated.
+        </p>
+
+        <div class="allocation-options">
+            <div class="option-item">
+                <input type="checkbox" id="principal" class="allocation-checkbox" data-key="principal">
+                <label for="principal" class="option-label">Additional Principal</label>
+                <div class="amount-input-group">
+                    <span>$</span>
+                    <input type="number" class="amount-input" data-key="principal" placeholder="0.00" disabled>
+                </div>
+            </div>
+
+            <div class="option-item">
+                <input type="checkbox" id="nextPayments" class="allocation-checkbox" data-key="nextPayments">
+                <label for="nextPayments" class="option-label">Number of Payments @ $300</label>
+                <div class="amount-input-group" style="flex-direction: column; align-items: center; gap: 0; margin-left: auto;">
+                    <input type="number" class="payment-count-input" data-key="nextPayments" placeholder="0" min="0" disabled style="width: 80px; text-align: center;">
+                    <span class="payment-label">payments</span>
+                </div>
+            </div>
+
+            <div class="option-item">
+                <input type="checkbox" id="serviceFees" class="allocation-checkbox" data-key="serviceFees">
+                <label for="serviceFees" class="option-label">Service Fees</label>
+                <div class="amount-input-group">
+                    <span>$</span>
+                    <input type="number" class="amount-input" data-key="serviceFees" placeholder="0.00" disabled>
+                </div>
+            </div>
+
+            <div class="option-item">
+                <input type="checkbox" id="escrow" class="allocation-checkbox" data-key="escrow">
+                <label for="escrow" class="option-label">Escrow</label>
+                <div class="amount-input-group">
+                    <span>$</span>
+                    <input type="number" class="amount-input" data-key="escrow" placeholder="0.00" disabled>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <div class="summary-row">
+                <span>Total to Allocate:</span>
+                <span id="totalToAllocate">$1,000.00</span>
+            </div>
+            <div class="summary-row">
+                <span>Total Allocated:</span>
+                <span id="totalAllocated">$0.00</span>
+            </div>
+            <div class="summary-row" id="remainingRow">
+                <span>Remaining:</span>
+                <span id="remaining">$1,000.00</span>
+            </div>
+        </div>
+
+        <div id="statusIndicator" class="status-indicator"></div>
+
+        <div class="button-group">
+            <button class="btn-cancel">Cancel</button>
+            <button class="btn-ok" id="okButton" disabled>OK</button>
+        </div>
+    </div>
+
+    <script>
+        const TOTAL_AMOUNT = 1000;
+        const allocations = {
+            principal: 0,
+            nextPayments: 0,
+            serviceFees: 0,
+            escrow: 0
+        };
+        const enabled = {
+            principal: false,
+            nextPayments: false,
+            serviceFees: false,
+            escrow: false
+        };
+
+        const checkboxes = document.querySelectorAll('.allocation-checkbox');
+        const amountInputs = document.querySelectorAll('.amount-input');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const okButton = document.getElementById('okButton');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const key = this.dataset.key;
+                enabled[key] = this.checked;
+                
+                const input = document.querySelector('.amount-input[data-key="' + key + '"], .payment-count-input[data-key="' + key + '"]');
+                input.disabled = !this.checked;
+                
+                if (!this.checked) {
+                    allocations[key] = 0;
+                    input.value = '';
+                }
+                
+                updateSummary();
+            });
+        });
+
+        amountInputs.forEach(input => {
+            input.addEventListener('input', function() {
+                const key = this.dataset.key;
+                allocations[key] = parseFloat(this.value) || 0;
+                updateSummary();
+            });
+        });
+
+        const paymentCountInputs = document.querySelectorAll('.payment-count-input');
+        paymentCountInputs.forEach(input => {
+            input.addEventListener('input', function() {
+                const key = this.dataset.key;
+                const count = parseInt(this.value) || 0;
+                allocations[key] = count * 300;
+                updateSummary();
+            });
+        });
+
+        function updateSummary() {
+            const totalAllocated = Object.keys(allocations).reduce((sum, key) => {
+                return sum + (enabled[key] ? allocations[key] : 0);
+            }, 0);
+
+            const remaining = TOTAL_AMOUNT - totalAllocated;
+            const isBalanced = Math.abs(remaining) < 0.01;
+
+            document.getElementById('totalAllocated').textContent = '$' + totalAllocated.toFixed(2);
+            document.getElementById('remaining').textContent = '$' + remaining.toFixed(2);
+
+            const remainingRow = document.getElementById('remainingRow');
+            remainingRow.classList.remove('balanced', 'unbalanced');
+            remainingRow.classList.add(isBalanced ? 'balanced' : 'unbalanced');
+
+            if (!isBalanced) {
+                statusIndicator.className = 'status-indicator warning show';
+                if (remaining > 0) {
+                    statusIndicator.innerHTML = '<span>⚠️</span><span>You must allocate exactly $1,000. $' + remaining.toFixed(2) + ' remaining</span>';
+                } else {
+                    statusIndicator.innerHTML = '<span>⚠️</span><span>You must allocate exactly $1,000. $' + Math.abs(remaining).toFixed(2) + ' over budget</span>';
+                }
+            } else {
+                statusIndicator.className = 'status-indicator success show';
+                statusIndicator.innerHTML = '<span class="checkmark">✓</span><span>All funds allocated correctly</span>';
+            }
+
+            okButton.disabled = !isBalanced;
+        }
+
+        updateSummary();
+    </script>
+</body>
+</html>
