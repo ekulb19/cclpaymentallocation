@@ -109,18 +109,25 @@
             box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
         }
 
-        .payment-label {
-            font-size: 12px;
-            color: #999;
-            margin-top: 4px;
-            text-align: center;
-        }
-
         .summary-box {
             background-color: #fafafa;
             padding: 20px;
             margin-bottom: 24px;
             border: 1px solid #d1d5db;
+        }
+
+        .summary-section {
+            display: flex;
+            gap: 40px;
+        }
+
+        .summary-col {
+            flex: 1;
+        }
+
+        .summary-col:last-child {
+            border-left: 1px solid #d1d5db;
+            padding-left: 40px;
         }
 
         .summary-row {
@@ -133,9 +140,6 @@
 
         .summary-row:last-child {
             margin-bottom: 0;
-            padding-top: 10px;
-            border-top: 1px solid #d1d5db;
-            margin-top: 10px;
             font-weight: bold;
             font-size: 15px;
         }
@@ -154,12 +158,10 @@
             border-radius: 4px;
             font-size: 14px;
             display: none;
-            align-items: center;
-            gap: 10px;
         }
 
         .status-indicator.show {
-            display: flex;
+            display: block;
         }
 
         .status-indicator.warning {
@@ -213,24 +215,29 @@
             cursor: not-allowed;
             color: #9ca3af;
         }
-
-        .checkmark {
-            font-size: 16px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Now Apply the $1,000</h1>
+        <h1>Now Apply the $10,000</h1>
 
         <p class="message">
-            Select where to apply the $1,000 payment and enter amounts. All funds must be allocated.
+            Select where to apply the $10,000 payment and enter amounts. All funds must be allocated.
         </p>
 
         <div class="allocation-options">
             <div class="option-item">
+                <input type="checkbox" id="nextPayment" class="allocation-checkbox" data-key="nextPayment">
+                <label for="nextPayment" class="option-label">Number of Payments @ $300</label>
+                <div class="amount-input-group" style="flex-direction: column; align-items: center; gap: 0; margin-left: auto;">
+                    <input type="number" class="payment-count-input" data-key="nextPayment" placeholder="0" min="0" disabled style="width: 80px; text-align: center;">
+                    <span style="font-size: 12px; color: #999; margin-top: 4px;">payments</span>
+                </div>
+            </div>
+
+            <div class="option-item">
                 <input type="checkbox" id="principal" class="allocation-checkbox" data-key="principal">
-                <label for="principal" class="option-label">Additional Principal</label>
+                <label for="principal" class="option-label">Principal</label>
                 <div class="amount-input-group">
                     <span>$</span>
                     <input type="number" class="amount-input" data-key="principal" placeholder="0.00" disabled>
@@ -238,17 +245,26 @@
             </div>
 
             <div class="option-item">
-                <input type="checkbox" id="nextPayments" class="allocation-checkbox" data-key="nextPayments">
-                <label for="nextPayments" class="option-label">Number of Payments @ $300</label>
-                <div class="amount-input-group" style="flex-direction: column; align-items: center; gap: 0; margin-left: auto;">
-                    <input type="number" class="payment-count-input" data-key="nextPayments" placeholder="0" min="0" disabled style="width: 80px; text-align: center;">
-                    <span class="payment-label">payments</span>
+                <input type="checkbox" id="payoff" class="allocation-checkbox" data-key="payoff">
+                <label for="payoff" class="option-label">Payoff</label>
+                <div class="amount-input-group">
+                    <span>$</span>
+                    <input type="number" class="amount-input" data-key="payoff" placeholder="0.00" disabled>
+                </div>
+            </div>
+
+            <div class="option-item">
+                <input type="checkbox" id="lateFees" class="allocation-checkbox" data-key="lateFees">
+                <label for="lateFees" class="option-label">Late Fees</label>
+                <div class="amount-input-group">
+                    <span>$</span>
+                    <input type="number" class="amount-input" data-key="lateFees" placeholder="0.00" disabled>
                 </div>
             </div>
 
             <div class="option-item">
                 <input type="checkbox" id="serviceFees" class="allocation-checkbox" data-key="serviceFees">
-                <label for="serviceFees" class="option-label">Service Fees</label>
+                <label for="serviceFees" class="option-label">Service Fee</label>
                 <div class="amount-input-group">
                     <span>$</span>
                     <input type="number" class="amount-input" data-key="serviceFees" placeholder="0.00" disabled>
@@ -266,17 +282,23 @@
         </div>
 
         <div class="summary-box">
-            <div class="summary-row">
-                <span>Total to Allocate:</span>
-                <span id="totalToAllocate">$1,000.00</span>
-            </div>
-            <div class="summary-row">
-                <span>Total Allocated:</span>
-                <span id="totalAllocated">$0.00</span>
-            </div>
-            <div class="summary-row" id="remainingRow">
-                <span>Remaining:</span>
-                <span id="remaining">$1,000.00</span>
+            <div class="summary-section">
+                <div class="summary-col">
+                    <div class="summary-row">
+                        <span>Total to Allocate:</span>
+                        <span>$10,000.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Total Allocated:</span>
+                        <span id="totalAllocated">$0.00</span>
+                    </div>
+                </div>
+                <div class="summary-col">
+                    <div class="summary-row" id="remainingRow">
+                        <span>Remaining:</span>
+                        <span id="remaining">$10,000.00</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -289,91 +311,111 @@
     </div>
 
     <script>
-        const TOTAL_AMOUNT = 1000;
-        const allocations = {
+        var TOTAL = 10000;
+        var data = {
+            nextPayment: 0,
             principal: 0,
-            nextPayments: 0,
+            payoff: 0,
+            lateFees: 0,
             serviceFees: 0,
             escrow: 0
         };
-        const enabled = {
+        var checked = {
+            nextPayment: false,
             principal: false,
-            nextPayments: false,
+            payoff: false,
+            lateFees: false,
             serviceFees: false,
             escrow: false
         };
 
-        const checkboxes = document.querySelectorAll('.allocation-checkbox');
-        const amountInputs = document.querySelectorAll('.amount-input');
-        const statusIndicator = document.getElementById('statusIndicator');
-        const okButton = document.getElementById('okButton');
+        var allCheckboxes = document.querySelectorAll('.allocation-checkbox');
+        var allInputs = document.querySelectorAll('.amount-input');
+        var indicator = document.getElementById('statusIndicator');
+        var okBtn = document.getElementById('okButton');
 
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const key = this.dataset.key;
-                enabled[key] = this.checked;
-                
-                const input = document.querySelector('.amount-input[data-key="' + key + '"], .payment-count-input[data-key="' + key + '"]');
-                input.disabled = !this.checked;
-                
-                if (!this.checked) {
-                    allocations[key] = 0;
-                    input.value = '';
-                }
-                
-                updateSummary();
-            });
-        });
-
-        amountInputs.forEach(input => {
-            input.addEventListener('input', function() {
-                const key = this.dataset.key;
-                allocations[key] = parseFloat(this.value) || 0;
-                updateSummary();
-            });
-        });
-
-        const paymentCountInputs = document.querySelectorAll('.payment-count-input');
-        paymentCountInputs.forEach(input => {
-            input.addEventListener('input', function() {
-                const key = this.dataset.key;
-                const count = parseInt(this.value) || 0;
-                allocations[key] = count * 300;
-                updateSummary();
-            });
-        });
-
-        function updateSummary() {
-            const totalAllocated = Object.keys(allocations).reduce((sum, key) => {
-                return sum + (enabled[key] ? allocations[key] : 0);
-            }, 0);
-
-            const remaining = TOTAL_AMOUNT - totalAllocated;
-            const isBalanced = Math.abs(remaining) < 0.01;
-
-            document.getElementById('totalAllocated').textContent = '$' + totalAllocated.toFixed(2);
-            document.getElementById('remaining').textContent = '$' + remaining.toFixed(2);
-
-            const remainingRow = document.getElementById('remainingRow');
-            remainingRow.classList.remove('balanced', 'unbalanced');
-            remainingRow.classList.add(isBalanced ? 'balanced' : 'unbalanced');
-
-            if (!isBalanced) {
-                statusIndicator.className = 'status-indicator warning show';
-                if (remaining > 0) {
-                    statusIndicator.innerHTML = '<span>⚠️</span><span>You must allocate exactly $1,000. $' + remaining.toFixed(2) + ' remaining</span>';
-                } else {
-                    statusIndicator.innerHTML = '<span>⚠️</span><span>You must allocate exactly $1,000. $' + Math.abs(remaining).toFixed(2) + ' over budget</span>';
-                }
-            } else {
-                statusIndicator.className = 'status-indicator success show';
-                statusIndicator.innerHTML = '<span class="checkmark">✓</span><span>All funds allocated correctly</span>';
-            }
-
-            okButton.disabled = !isBalanced;
+        function addCommas(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
 
-        updateSummary();
+        function refresh() {
+            var total = 0;
+            var i;
+            for (i in data) {
+                if (checked[i]) {
+                    total = total + data[i];
+                }
+            }
+
+            var left = TOTAL - total;
+            var balanced = Math.abs(left) < 0.01;
+
+            document.getElementById('totalAllocated').textContent = '$' + addCommas(total.toFixed(2));
+            document.getElementById('remaining').textContent = '$' + addCommas(left.toFixed(2));
+
+            var row = document.getElementById('remainingRow');
+            row.classList.remove('balanced');
+            row.classList.remove('unbalanced');
+            if (balanced) {
+                row.classList.add('balanced');
+            } else {
+                row.classList.add('unbalanced');
+            }
+
+            if (!balanced) {
+                indicator.className = 'status-indicator warning show';
+                if (left > 0) {
+                    indicator.innerHTML = 'You must allocate exactly $10,000. $' + addCommas(left.toFixed(2)) + ' remaining';
+                } else {
+                    indicator.innerHTML = 'You must allocate exactly $10,000. $' + addCommas(Math.abs(left).toFixed(2)) + ' over budget';
+                }
+            } else {
+                indicator.className = 'status-indicator success show';
+                indicator.innerHTML = 'All funds allocated correctly';
+            }
+
+            okBtn.disabled = !balanced;
+        }
+
+        var j;
+        for (j = 0; j < allCheckboxes.length; j++) {
+            allCheckboxes[j].addEventListener('change', function() {
+                var key = this.getAttribute('data-key');
+                checked[key] = this.checked;
+                
+                var inp = document.querySelector('.amount-input[data-key="' + key + '"]');
+                inp.disabled = !this.checked;
+                
+                if (!this.checked) {
+                    data[key] = 0;
+                    inp.value = '';
+                }
+                
+                refresh();
+            });
+        }
+
+        var k;
+        for (k = 0; k < allInputs.length; k++) {
+            allInputs[k].addEventListener('input', function() {
+                var key = this.getAttribute('data-key');
+                data[key] = parseFloat(this.value) || 0;
+                refresh();
+            });
+        }
+
+        var paymentInputs = document.querySelectorAll('.payment-count-input');
+        var m;
+        for (m = 0; m < paymentInputs.length; m++) {
+            paymentInputs[m].addEventListener('input', function() {
+                var key = this.getAttribute('data-key');
+                var count = parseInt(this.value) || 0;
+                data[key] = count * 300;
+                refresh();
+            });
+        }
+
+        refresh();
     </script>
 </body>
 </html>
