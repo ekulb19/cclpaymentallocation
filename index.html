@@ -40,6 +40,31 @@
             font-size: 14px;
             margin-bottom: 32px;
         }
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+        .step-header {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+        .step-number {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .step-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+        }
         .summary-card {
             background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
             border: 1px solid #e5e7eb;
@@ -67,20 +92,95 @@
             font-weight: 600;
             font-size: 16px;
         }
-        .allocation-grid {
+
+        /* STEP 1: Payment Entry & Category Selection */
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .input-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .currency-prefix {
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 16px;
+        }
+        input[type="number"] {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        .info-text {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 8px;
+        }
+
+        .category-grid {
             display: grid;
-            gap: 20px;
+            gap: 12px;
             margin-bottom: 32px;
         }
+        .category-item {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .category-item:hover {
+            border-color: #d1d5db;
+            background: #f9fafb;
+        }
+        .category-item.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+        .category-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .category-info {
+            flex: 1;
+        }
+        .category-name {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+        .category-balance {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        /* STEP 2: ENTER AMOUNTS */
         .allocation-card {
             border: 1px solid #e5e7eb;
             border-radius: 8px;
             padding: 20px;
-            transition: all 0.2s;
-        }
-        .allocation-card:hover {
-            border-color: #d1d5db;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+            background: #f9fafb;
         }
         .card-title {
             font-weight: 600;
@@ -92,12 +192,13 @@
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
         .stat {
-            background: #f9fafb;
+            background: white;
             padding: 12px;
             border-radius: 6px;
+            border: 1px solid #e5e7eb;
             font-size: 13px;
         }
         .stat-label {
@@ -119,28 +220,8 @@
             gap: 12px;
             align-items: flex-end;
         }
-        .input-wrapper {
+        .input-wrapper-flex {
             flex: 1;
-        }
-        .input-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 6px;
-            display: block;
-        }
-        input[type="number"] {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        input[type="number"]:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
         .btn-small {
             padding: 10px 16px;
@@ -158,45 +239,81 @@
         .btn-clear:hover {
             background: #e5e7eb;
         }
-        .escrow-note {
-            font-size: 12px;
-            color: #6b7280;
-            margin-top: 8px;
-            padding-top: 8px;
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #374151;
+            cursor: pointer;
+            margin-top: 12px;
+            padding-top: 12px;
             border-top: 1px solid #e5e7eb;
         }
-        .payment-summary {
-            background: #f0f9ff;
-            border: 1px solid #bfdbfe;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 24px;
+        .checkbox-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
         }
-        .payment-summary-row {
+        .note {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        /* STEP 3: REVIEW */
+        .review-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+            background: #f9fafb;
+        }
+        .review-item {
             display: flex;
             justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
             font-size: 14px;
-            padding: 6px 0;
         }
-        .payment-summary-row.total {
-            font-weight: 600;
-            border-top: 1px solid #bfdbfe;
-            padding-top: 8px;
-            margin-top: 8px;
+        .review-item:last-child {
+            border-bottom: none;
         }
-        .payment-summary-label {
-            color: #1e40af;
+        .review-label {
+            color: #6b7280;
+            font-weight: 500;
         }
-        .payment-summary-value {
-            color: #1e40af;
+        .review-value {
+            color: #1f2937;
             font-weight: 600;
         }
-        .remaining {
-            color: #dc2626;
+
+        /* Status Message */
+        .status-message {
+            text-align: center;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
         }
-        .remaining.balanced {
-            color: #16a34a;
+        .status-message.show {
+            display: block;
         }
+        .status-message.success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+        .status-message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* Buttons */
         .btn-group {
             display: flex;
             gap: 12px;
@@ -230,39 +347,18 @@
         .btn-secondary:hover {
             background: #d1d5db;
         }
-        .status-message {
-            text-align: center;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            display: none;
-        }
-        .status-message.show {
-            display: block;
-        }
-        .status-message.success {
-            background: #dcfce7;
-            color: #166534;
-            border: 1px solid #86efac;
-        }
-        .status-message.error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Allocate Your $10,000 Payment</h1>
+        <h1>Allocate Your Payment</h1>
         <p class="subtitle">Review your current loan balances and decide where to apply your payment</p>
 
         <!-- Current Payment Summary -->
         <div class="summary-card">
             <div class="summary-row">
                 <span class="summary-label">Payment Amount</span>
-                <span class="summary-value">$10,000.00</span>
+                <span class="summary-value" id="paymentDisplay">$10,000.00</span>
             </div>
             <div class="summary-row">
                 <span class="summary-label">Remaining to Allocate</span>
@@ -270,204 +366,116 @@
             </div>
         </div>
 
-        <!-- Status Message -->
-        <div class="status-message" id="statusMessage"></div>
+        <!-- STEP 1: PAYMENT ENTRY & SELECT CATEGORIES -->
+        <div class="step active" id="step1">
+            <div class="step-header">
+                <div class="step-number">Step 1 of 3</div>
+                <div class="step-title">Enter Payment & Select Categories</div>
+            </div>
 
-        <!-- Allocation Cards -->
-        <div class="allocation-grid">
-
-            <!-- Next Payment -->
             <div class="allocation-card">
-                <div class="card-title">Next Payment</div>
+                <div class="card-title">Payment Amount</div>
                 <div class="card-stats">
                     <div class="stat">
-                        <div class="stat-label">Payment Amount</div>
+                        <div class="stat-label">Standard Payment</div>
                         <div class="stat-value">$2,500.00</div>
                     </div>
                     <div class="stat">
-                        <div class="stat-label">Allocated</div>
-                        <div class="stat-value allocated" id="nextPaymentAllocated">$0.00</div>
+                        <div class="stat-label">Your Payment</div>
+                        <div class="stat-value allocated" id="yourPaymentDisplay">$10,000.00</div>
                     </div>
                     <div class="stat">
-                        <div class="stat-label">Available</div>
-                        <div class="stat-value" id="nextPaymentAvailable">$10,000.00</div>
+                        <div class="stat-label">Overpayment</div>
+                        <div class="stat-value" id="overpaymentDisplay">$7,500.00</div>
                     </div>
                 </div>
                 <div class="input-group">
-                    <div class="input-wrapper">
+                    <div class="input-wrapper-flex">
                         <label class="input-label">Number of Payments</label>
-                        <input type="number" class="allocation-input" data-key="nextPayment" data-increment="2500" placeholder="0" min="0" step="1">
+                        <input type="number" id="paymentInput" value="4" step="1" min="0">
                     </div>
-                    <button class="btn-small btn-clear" data-key="nextPayment">Clear</button>
-                </div>
-                <div class="escrow-note">
-                    Each payment = $2,500
+                    <button class="btn-small btn-clear" id="resetPaymentBtn">Clear</button>
                 </div>
             </div>
 
-            <!-- Principal -->
-            <div class="allocation-card">
-                <div class="card-title">Principal</div>
-                <div class="card-stats">
-                    <div class="stat">
-                        <div class="stat-label">Current Balance</div>
-                        <div class="stat-value">$30,000.00</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">Allocated</div>
-                        <div class="stat-value allocated" id="principalAllocated">$0.00</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">Available</div>
-                        <div class="stat-value" id="principalAvailable">$10,000.00</div>
-                    </div>
+            <div style="margin-bottom: 24px;">
+                <label class="input-label" style="margin-bottom: 16px;">Select Categories</label>
+                <div class="category-grid">
+                    <label class="category-item">
+                        <input type="checkbox" class="category-checkbox" data-key="nextPayment">
+                        <div class="category-info">
+                            <div class="category-name">Next Payment</div>
+                            <div class="category-balance">$2,500 per payment</div>
+                        </div>
+                    </label>
+                    <label class="category-item">
+                        <input type="checkbox" class="category-checkbox" data-key="principal">
+                        <div class="category-info">
+                            <div class="category-name">Principal</div>
+                            <div class="category-balance">Current balance: $30,000.00</div>
+                        </div>
+                    </label>
+                    <label class="category-item">
+                        <input type="checkbox" class="category-checkbox" data-key="payoff">
+                        <div class="category-info">
+                            <div class="category-name">Payoff</div>
+                            <div class="category-balance">Current balance: $30,100.00</div>
+                        </div>
+                    </label>
+                    <label class="category-item">
+                        <input type="checkbox" class="category-checkbox" data-key="lateFees">
+                        <div class="category-info">
+                            <div class="category-name">Late Fees</div>
+                            <div class="category-balance">Current balance: $0.00</div>
+                        </div>
+                    </label>
+                    <label class="category-item">
+                        <input type="checkbox" class="category-checkbox" data-key="serviceFees">
+                        <div class="category-info">
+                            <div class="category-name">Service Fees</div>
+                            <div class="category-balance">Current balance: $75.00</div>
+                        </div>
+                    </label>
+                    <label class="category-item">
+                        <input type="checkbox" class="category-checkbox" data-key="escrow">
+                        <div class="category-info">
+                            <div class="category-name">Escrow</div>
+                            <div class="category-balance">Current balance: $1,500.00</div>
+                        </div>
+                    </label>
                 </div>
-                <div class="input-group">
-                    <div class="input-wrapper">
-                        <label class="input-label">Amount to Apply</label>
-                        <input type="number" class="allocation-input" data-key="principal" placeholder="0.00" min="0" step="0.01">
-                    </div>
-                    <button class="btn-small btn-clear" data-key="principal">Clear</button>
-                </div>
-            </div>
-
-            <!-- Payoff -->
-            <div class="allocation-card">
-                <div class="card-title">Payoff</div>
-                <div class="card-stats">
-                    <div class="stat">
-                        <div class="stat-label">Current Balance</div>
-                        <div class="stat-value">$30,100.00</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">Allocated</div>
-                        <div class="stat-value allocated" id="payoffAllocated">$0.00</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">Available</div>
-                        <div class="stat-value" id="payoffAvailable">$10,000.00</div>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <div class="input-wrapper">
-                        <label class="input-label">Amount to Apply</label>
-                        <input type="number" class="allocation-input" data-key="payoff" placeholder="0.00" min="0" step="0.01">
-                    </div>
-                    <button class="btn-small btn-clear" data-key="payoff">Clear</button>
-                </div>
-            </div>
-
-            <!-- Late Fees -->
-            <div class="allocation-card">
-                <div class="card-title">Late Fees</div>
-                <div class="card-stats">
-                    <div class="stat">
-                        <div class="stat-label">Current Balance</div>
-                        <div class="stat-value">$0.00</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">Allocated</div>
-                        <div class="stat-value allocated" id="lateFeesAllocated">$0.00</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">Available</div>
-                        <div class="stat-value" id="lateFeesAvailable">$10,000.00</div>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <div class="input-wrapper">
-                        <label class="input-label">Amount to Apply</label>
-                        <input type="number" class="allocation-input" data-key="lateFees" placeholder="0.00" min="0" step="0.01">
-                    </div>
-                    <button class="btn-small btn-clear" data-key="lateFees">Clear</button>
-                </div>
-            </div>
-
-            <!-- Service Fees -->
-            <div class="allocation-card">
-                <div class="card-title">Service Fees</div>
-                <div class="card-stats">
-                    <div class="stat">
-                        <div class="stat-label">Current Balance</div>
-                        <div class="stat-value">$75.00</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">Allocated</div>
-                        <div class="stat-value allocated" id="serviceFeesAllocated">$0.00</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">Available</div>
-                        <div class="stat-value" id="serviceFeesAvailable">$10,000.00</div>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <div class="input-wrapper">
-                        <label class="input-label">Amount to Apply</label>
-                        <input type="number" class="allocation-input" data-key="serviceFees" placeholder="0.00" min="0" step="0.01">
-                    </div>
-                    <button class="btn-small btn-clear" data-key="serviceFees">Clear</button>
-                </div>
-            </div>
-
-            <!-- Escrow -->
-            <div class="allocation-card">
-                <div class="card-title">Escrow</div>
-                <div class="card-stats">
-                    <div class="stat">
-                        <div class="stat-label">Current Balance</div>
-                        <div class="stat-value">$1,500.00</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">Allocated</div>
-                        <div class="stat-value allocated" id="escrowAllocated">$0.00</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">Available</div>
-                        <div class="stat-value" id="escrowAvailable">$10,000.00</div>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <div class="input-wrapper">
-                        <label class="input-label">Prepay Months</label>
-                        <input type="number" class="allocation-input" data-key="escrow" data-monthly="50" placeholder="0" min="0" step="1">
-                    </div>
-                    <button class="btn-small btn-clear" data-key="escrow">Clear</button>
-                </div>
-                <div class="escrow-note">
-                    At $50/month, each month = $50 prepayment
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Allocation Summary -->
-        <div class="payment-summary">
-            <div class="payment-summary-row">
-                <span class="payment-summary-label">Total Payment:</span>
-                <span class="payment-summary-value">$10,000.00</span>
-            </div>
-            <div class="payment-summary-row">
-                <span class="payment-summary-label">Total Allocated:</span>
-                <span class="payment-summary-value" id="summaryAllocated">$0.00</span>
-            </div>
-            <div class="payment-summary-row total">
-                <span class="payment-summary-label">Remaining:</span>
-                <span class="payment-summary-value remaining" id="summaryRemaining">$10,000.00</span>
             </div>
         </div>
 
-        <!-- Action Buttons -->
+        <!-- STEP 2: ENTER AMOUNTS -->
+        <div class="step" id="step2">
+            <div class="step-header">
+                <div class="step-number">Step 2 of 3</div>
+                <div class="step-title">Enter Amounts</div>
+            </div>
+            <div id="step2Content"></div>
+        </div>
+
+        <!-- STEP 3: REVIEW -->
+        <div class="step" id="step3">
+            <div class="step-header">
+                <div class="step-number">Step 3 of 3</div>
+                <div class="step-title">Review & Confirm</div>
+            </div>
+            <div class="status-message" id="statusMessage"></div>
+            <div id="step3Content"></div>
+        </div>
+
+        <!-- Buttons -->
         <div class="btn-group">
-            <button class="btn-secondary">Cancel</button>
-            <button class="btn-primary" id="submitBtn" disabled>Submit Allocation</button>
+            <button class="btn-secondary" id="cancelBtn">Cancel</button>
+            <button class="btn-secondary" id="prevBtn" style="display: none;">Back</button>
+            <button class="btn-primary" id="nextBtn">Next</button>
+            <button class="btn-primary" id="submitBtn" style="display: none;" disabled>Submit Allocation</button>
         </div>
-
-        <!-- Bottom Status Message -->
-        <div class="status-message" id="statusMessageBottom" style="margin-top: 24px;"></div>
     </div>
 
     <script>
-        const PAYMENT_AMOUNT = 10000;
         const ESCROW_MONTHLY = 50;
 
         const data = {
@@ -479,12 +487,21 @@
             escrow: 0
         };
 
+        const categoryData = {
+            nextPayment: { name: 'Next Payment', balance: 0, increment: 2500, type: 'count' },
+            principal: { name: 'Principal', balance: 30000, type: 'amount' },
+            payoff: { name: 'Payoff', balance: 30100, type: 'amount' },
+            lateFees: { name: 'Late Fees', balance: 0, type: 'amount' },
+            serviceFees: { name: 'Service Fees', balance: 75, type: 'amount' },
+            escrow: { name: 'Escrow', balance: 1500, monthly: 50, type: 'count' }
+        };
+
+        let currentStep = 1;
+        let selectedCategories = [];
+        let paymentAmount = 10000;
+
         function formatMoney(num) {
             return '$' + parseFloat(num).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        }
-
-        function getEscrowAmount(months) {
-            return months * ESCROW_MONTHLY;
         }
 
         function getTotalAllocated() {
@@ -492,107 +509,245 @@
         }
 
         function getRemaining() {
-            return PAYMENT_AMOUNT - getTotalAllocated();
+            return paymentAmount - getTotalAllocated();
         }
 
-        function updateAllAllocations() {
+        function updateRemaining() {
+            document.getElementById('totalRemaining').textContent = formatMoney(getRemaining());
+        }
+
+        function updatePaymentDisplay() {
+            document.getElementById('paymentDisplay').textContent = formatMoney(paymentAmount);
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+            currentStep = step;
+
+            document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'block';
+            document.getElementById('nextBtn').style.display = step === 3 ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = step === 3 ? 'block' : 'none';
+
+            if (step === 2) {
+                renderStep2();
+            } else if (step === 3) {
+                renderStep3();
+            }
+        }
+
+        function renderStep2() {
+            const content = document.getElementById('step2Content');
+            content.innerHTML = '';
+
+            selectedCategories.forEach(key => {
+                const cat = categoryData[key];
+                const allocated = data[key];
+                
+                let html = `
+                    <div class="allocation-card">
+                        <div class="card-title">${cat.name}</div>
+                        <div class="card-stats">
+                            <div class="stat">
+                                <div class="stat-label">Current Balance</div>
+                                <div class="stat-value">${formatMoney(cat.balance)}</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-label">Allocated</div>
+                                <div class="stat-value allocated">${formatMoney(allocated)}</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-label">Available</div>
+                                <div class="stat-value">${formatMoney(getRemaining())}</div>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <div class="input-wrapper-flex">
+                `;
+
+                if (key === 'nextPayment') {
+                    html += `
+                        <label class="input-label">Number of Payments</label>
+                        <input type="number" class="amount-input" data-key="${key}" placeholder="0" min="0" step="1" value="${allocated / 2500}">
+                    `;
+                } else if (key === 'escrow') {
+                    html += `
+                        <label class="input-label">Prepay Months</label>
+                        <input type="number" class="amount-input" data-key="${key}" placeholder="0" min="0" step="1" value="${allocated / 50}">
+                    `;
+                } else {
+                    html += `
+                        <label class="input-label">Amount to Apply</label>
+                        <input type="number" class="amount-input" data-key="${key}" placeholder="0.00" min="0" step="0.01" value="${allocated || ''}">
+                    `;
+                }
+
+                html += `
+                            </div>
+                            <button class="btn-small btn-clear" data-key="${key}">Clear</button>
+                        </div>
+                `;
+
+                if (key === 'escrow') {
+                    html += `
+                        <div class="note">
+                            At $50/month, each month = $50 prepayment
+                        </div>
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="escrow-checkbox" ${allocated === 1500 ? 'checked' : ''}>
+                            Pay Current Balance ($1,500)
+                        </label>
+                    `;
+                }
+
+                html += '</div>';
+                content.innerHTML += html;
+            });
+
+            // Add event listeners
+            document.querySelectorAll('.amount-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    const key = this.getAttribute('data-key');
+                    if (key === 'nextPayment') {
+                        data[key] = (parseInt(this.value) || 0) * 2500;
+                    } else if (key === 'escrow') {
+                        data[key] = (parseInt(this.value) || 0) * 50;
+                    } else {
+                        data[key] = parseFloat(this.value) || 0;
+                    }
+                    updateRemaining();
+                });
+            });
+
+            document.querySelectorAll('.btn-clear').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const key = this.getAttribute('data-key');
+                    data[key] = 0;
+                    renderStep2();
+                });
+            });
+
+            document.querySelectorAll('.escrow-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const card = this.closest('.allocation-card');
+                    const escrowInput = card.querySelector('input[data-key="escrow"]');
+                    if (this.checked) {
+                        data.escrow = 1500;
+                        escrowInput.value = 30;
+                    } else {
+                        data.escrow = 0;
+                        escrowInput.value = '';
+                    }
+                    updateRemaining();
+                });
+            });
+        }
+
+        function renderStep3() {
+            const content = document.getElementById('step3Content');
             const total = getTotalAllocated();
             const remaining = getRemaining();
+            const balanced = Math.abs(remaining) < 0.01;
 
-            // Update each card's stats
-            for (const key in data) {
-                document.getElementById(key + 'Allocated').textContent = formatMoney(data[key]);
-                document.getElementById(key + 'Available').textContent = formatMoney(remaining);
-            }
+            let html = '<div class="review-card">';
+            html += `<div class="review-item"><span class="review-label">Total Payment:</span><span class="review-value">${formatMoney(paymentAmount)}</span></div>`;
+            html += `<div class="review-item"><span class="review-label">Total Allocated:</span><span class="review-value">${formatMoney(total)}</span></div>`;
+            html += `<div class="review-item"><span class="review-label">Remaining:</span><span class="review-value">${formatMoney(remaining)}</span></div>`;
+            html += '</div>';
 
-            // Update summary
-            document.getElementById('totalRemaining').textContent = formatMoney(remaining);
-            document.getElementById('summaryAllocated').textContent = formatMoney(total);
-            document.getElementById('summaryRemaining').textContent = formatMoney(remaining);
+            selectedCategories.forEach(key => {
+                if (data[key] > 0) {
+                    html += `
+                        <div class="review-card">
+                            <div class="review-item">
+                                <span class="review-label">${categoryData[key].name}</span>
+                                <span class="review-value">${formatMoney(data[key])}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
 
-            // Update remaining color
-            const remainingEl = document.getElementById('summaryRemaining');
-            remainingEl.classList.remove('balanced');
-            if (Math.abs(remaining) < 0.01) {
-                remainingEl.classList.add('balanced');
-            }
+            content.innerHTML = html;
 
-            // Enable/disable submit button
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = Math.abs(remaining) > 0.01;
-
-            // Show status message
             const statusEl = document.getElementById('statusMessage');
-            if (Math.abs(remaining) < 0.01) {
+            if (balanced) {
                 statusEl.className = 'status-message show success';
                 statusEl.textContent = '✓ All funds allocated correctly!';
-            } else if (total > 0) {
-                statusEl.className = 'status-message show error';
-                statusEl.textContent = `You must allocate exactly $10,000. ${formatMoney(remaining)} remaining.`;
             } else {
-                statusEl.className = 'status-message';
+                statusEl.className = 'status-message show error';
+                statusEl.textContent = `You must allocate exactly ${formatMoney(paymentAmount)}. ${formatMoney(remaining)} remaining.`;
             }
+
+            document.getElementById('submitBtn').disabled = !balanced;
         }
 
-        // Handle allocation inputs
-        document.querySelectorAll('.allocation-input').forEach(input => {
-            input.addEventListener('input', function() {
+        // Payment input listener
+        function updatePaymentStats() {
+            const standardPayment = 2500;
+            paymentAmount = (parseInt(document.getElementById('paymentInput').value) || 0) * standardPayment;
+            const overpayment = Math.max(0, paymentAmount - standardPayment);
+            
+            document.getElementById('yourPaymentDisplay').textContent = formatMoney(paymentAmount);
+            document.getElementById('overpaymentDisplay').textContent = formatMoney(overpayment);
+            updateRemaining();
+        }
+
+        document.getElementById('paymentInput').addEventListener('input', function() {
+            updatePaymentStats();
+        });
+
+        document.getElementById('resetPaymentBtn').addEventListener('click', function() {
+            document.getElementById('paymentInput').value = '';
+            paymentAmount = 0;
+            document.getElementById('yourPaymentDisplay').textContent = '$0.00';
+            document.getElementById('overpaymentDisplay').textContent = '$0.00';
+            updateRemaining();
+        });
+
+        // Category selection
+        document.querySelectorAll('.category-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
                 const key = this.getAttribute('data-key');
+                const item = this.closest('.category-item');
                 
-                if (key === 'nextPayment') {
-                    // For next payment, input is number of payments
-                    const payments = parseInt(this.value) || 0;
-                    data[key] = payments * 2500;
-                } else if (key === 'escrow') {
-                    // For escrow, input is number of months
-                    const months = parseInt(this.value) || 0;
-                    data[key] = getEscrowAmount(months);
+                if (this.checked) {
+                    selectedCategories.push(key);
+                    item.classList.add('selected');
                 } else {
-                    // For others, input is dollar amount
-                    const amount = parseFloat(this.value) || 0;
-                    data[key] = Math.max(0, amount);
+                    selectedCategories = selectedCategories.filter(k => k !== key);
+                    data[key] = 0;
+                    item.classList.remove('selected');
                 }
-                
-                updateAllAllocations();
             });
         });
 
-        // Handle clear buttons
-        document.querySelectorAll('.btn-clear').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const key = this.getAttribute('data-key');
-                data[key] = 0;
-                document.querySelector(`input[data-key="${key}"]`).value = '';
-                updateAllAllocations();
-            });
+        // Navigation
+        document.getElementById('nextBtn').addEventListener('click', function() {
+            if (currentStep === 1 && selectedCategories.length === 0) {
+                alert('Please select at least one category');
+                return;
+            }
+            if (currentStep < 3) showStep(currentStep + 1);
         });
 
-        // Handle submit
+        document.getElementById('prevBtn').addEventListener('click', function() {
+            if (currentStep > 1) showStep(currentStep - 1);
+        });
+
         document.getElementById('submitBtn').addEventListener('click', function() {
             const statusEl = document.getElementById('statusMessage');
-            const statusElBottom = document.getElementById('statusMessageBottom');
-            const message = '✓ Payment allocation successfully applied!';
-            
             statusEl.className = 'status-message show success';
-            statusEl.textContent = message;
-            
-            statusElBottom.className = 'status-message show success';
-            statusElBottom.textContent = message;
-            
-            // Disable the submit button and show details
+            statusEl.textContent = '✓ Payment allocation successfully applied!';
             this.disabled = true;
             this.textContent = 'Allocation Submitted';
         });
 
-        // Handle cancel
-        document.querySelector('.btn-secondary').addEventListener('click', function() {
+        document.getElementById('cancelBtn').addEventListener('click', function() {
             if (confirm('Cancel this allocation?')) {
                 location.reload();
             }
         });
-
-        // Initial update
-        updateAllAllocations();
     </script>
 </body>
 </html>
